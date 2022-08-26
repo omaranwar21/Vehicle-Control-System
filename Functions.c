@@ -2,11 +2,12 @@
  * Functions.c
  *
  *  Created on: Aug 20, 2022
- *      Author: Anwar
+ *      Author: Omar Anwar
  */
 #include <stdio.h>
 #include "Functions.h"
-#define WITH_ENGINE_TEMP_CONTROLLER 0
+// Definition to switch between the cases of vehicles whether the temperature controller exists.
+#define WITH_ENGINE_TEMP_CONTROLLER 1
 
 
 char choice; //Global variable to save the choice each step.
@@ -22,6 +23,7 @@ STATE state = {
 		.EngineTemperature_ControllerState = OFF
 };
 #else
+//initialization of the state of a vehicle without temperature controller.
 STATE state = {
 		.speed = 35.0,
 		.roomTemp = 25.0,
@@ -31,6 +33,7 @@ STATE state = {
 };
 #endif
 
+// the start menu of the application.
 
 void VehicleControlSystem(){
 
@@ -40,7 +43,7 @@ void VehicleControlSystem(){
 
 	switch (choice){
 	case 'a':
-		Sensors_SetMenu();
+		Sensors_SetMenu(); // this action leads to choose the system needed to change of the sensors.
 		break;
 
 	case 'b':
@@ -49,10 +52,12 @@ void VehicleControlSystem(){
 		break;
 
 	case 'c':
+		// Break the system down.
 		printf("Quit the system\n\n");
 		break;
 
 	default:
+		// if the user chose an undefined choice.
 		printf("Undefined choice");
 		VehicleControlSystem();
 		break;
@@ -63,9 +68,11 @@ void VehicleControlSystem(){
 void Sensors_SetMenu(){
 
 	printf("a. Turn off the engine.\nb. Set the traffic light color.\nc. Set the room temperature (Temperature Sensor)\n");
+
 #if WITH_ENGINE_TEMP_CONTROLLER
 	printf("d. Set the engine temperature (Engine Temperature Sensor).\n");
 #endif
+
 	printf("\n");
 	fflush(stdout);
 	scanf("\n %c", &choice);
@@ -96,6 +103,8 @@ void Sensors_SetMenu(){
 		displayData();
 		break;
 
+
+
 #if WITH_ENGINE_TEMP_CONTROLLER
 	case 'd':
 		printf("Set the engine temperature\n\n");
@@ -111,6 +120,8 @@ void Sensors_SetMenu(){
 		displayData();
 		break;
 #endif
+
+
 
 	default:
 		printf("Undefined choice");
@@ -155,23 +166,32 @@ void CheckSpeed(){
 		// For AC and Room temperature.
 		state.AC_State = 1;
 		state.roomTemp = ((state.roomTemp)*(5.0/4))+1.0;
+
+
 		// For Engine and Engine temperature.
 #if WITH_ENGINE_TEMP_CONTROLLER
 		state.EngineTemperature_ControllerState = ON;
 		state.engineTemp = (state.engineTemp)*(5.0/4)+1;
 #endif
+
+
 	}
 
 }
 
 void displayData(){
 	CheckSpeed(); // To check the speed before displaying the current state.
+
+	// for displaying engine state.
 	if (state.Engine_State) {
+
 		printf("Engine is ON\n");
 	}
 	else {
 		printf("Engine is OFF\n");
 	}
+
+	// for displaying AC state.
 	if (state.AC_State) {
 		printf("AC is ON\n");
 	}
@@ -193,7 +213,7 @@ void displayData(){
 #endif
 	printf("\n");
 	fflush(stdout);
-	VehicleControlSystem();
+	Sensors_SetMenu(); //Reasking the user for more feature to test.
 }
 
 
